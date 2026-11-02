@@ -1516,6 +1516,7 @@ apache-airflow-providers-apache-drill = false
 apache-airflow-providers-apache-druid = false
 apache-airflow-providers-apache-flink = false
 apache-airflow-providers-apache-hdfs = false
+apache-airflow-providers-apache-hbase = false
 apache-airflow-providers-apache-hive = false
 apache-airflow-providers-apache-iceberg = false
 apache-airflow-providers-apache-impala = false
@@ -1715,6 +1716,7 @@ apache-airflow-providers-apache-drill = false
 apache-airflow-providers-apache-druid = false
 apache-airflow-providers-apache-flink = false
 apache-airflow-providers-apache-hdfs = false
+apache-airflow-providers-apache-hbase = false
 apache-airflow-providers-apache-hive = false
 apache-airflow-providers-apache-iceberg = false
 apache-airflow-providers-apache-impala = false
@@ -1888,6 +1890,7 @@ apache-airflow-providers-apache-drill = { workspace = true }
 apache-airflow-providers-apache-druid = { workspace = true }
 apache-airflow-providers-apache-flink = { workspace = true }
 apache-airflow-providers-apache-hdfs = { workspace = true }
+apache-airflow-providers-apache-hbase = { workspace = true }
 apache-airflow-providers-apache-hive = { workspace = true }
 apache-airflow-providers-apache-iceberg = { workspace = true }
 apache-airflow-providers-apache-impala = { workspace = true }
@@ -2034,6 +2037,7 @@ members = [
     "providers/apache/druid",
     "providers/apache/flink",
     "providers/apache/hdfs",
+    "providers/apache/hbase",
     "providers/apache/hive",
     "providers/apache/iceberg",
     "providers/apache/impala",
