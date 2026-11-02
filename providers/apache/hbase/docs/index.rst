@@ -77,7 +77,7 @@ The Thrift2 layer talks to a running ``HBase Thrift2`` server via the Apache
 Thrift binary protocol. The CLI layer runs ``hbase backup`` commands on the
 worker host through ``HBaseCLIHook``.
 
-Both layers support plain, SSL/TLS, and Kerberos (GSSAPI) authentication,
+Both layers support plain and SSL/TLS connections,
 configured via the Airflow connection extra.
 
 Runtime deployment model
@@ -98,9 +98,7 @@ For manual preparation, the worker runtime should be provisioned with:
 * HBase CLI tools copied to a stable location such as ``/usr/lib/hbase``;
 * HBase client configuration available at ``/etc/hbase/conf`` or a
   custom directory pointed to by ``HBASE_HOME`` and ``HBASE_CONF_DIR``;
-* ``hbase`` available in ``PATH`` for CLI-based backup/restore operations;
-* For Kerberos-enabled clusters: a valid keytab and passwordless ``sudo``
-  access to run commands as the ``hbase`` user.
+* ``hbase`` available in ``PATH`` for CLI-based backup/restore operations.
 
 Quick start checklist
 ---------------------
@@ -109,7 +107,7 @@ For a minimal working setup:
 
 1. Ensure a HBase Thrift2 server is running and accessible from the worker.
 2. Create an ``hbase`` connection in Airflow with host, port (default 9090),
-   and any required extra parameters (Kerberos, SSL).
+   and any required extra parameters (SSL).
 3. Run the ``example_hbase`` DAG to verify connectivity.
 
 Requirements
@@ -117,8 +115,6 @@ Requirements
 
 * ``apache-airflow`` >= ``2.11.0``
 * ``thrift`` >= ``0.13.0``
-* ``thrift_sasl`` >= ``0.4.3``
-* ``sasl`` >= ``0.3.1``
 
 Connection contract
 -------------------
@@ -179,8 +175,6 @@ PIP package                                 Version required
 ``apache-airflow``                          ``>=2.11.0``
 ``apache-airflow-providers-common-compat``  ``>=1.12.0``
 ``thrift``                                  ``>=0.13.0``
-``thrift_sasl``                             ``>=0.4.3``
-``sasl``                                    ``>=0.3.1``
 ==========================================  ==================
 
 Cross provider package dependencies

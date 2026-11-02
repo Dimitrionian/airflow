@@ -53,18 +53,6 @@ Demonstrates fundamental HBase Thrift2 operations:
 
 Connection ID: ``hbase_thrift2``.
 
-``example_hbase_kerberos.py`` - Kerberos authentication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Shows Kerberos (GSSAPI) authenticated HBase Thrift2 operations:
-
-* Kerberos principal/keytab in connection extra
-* Standard CRUD operations with ``HBaseThriftHook``
-* Scan table
-
-Prerequisites: Kerberos ticket (``kinit``), HBase Thrift2 server with
-Kerberos enabled.
-
 ``example_hbase_batch.py`` - Batch operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -162,8 +150,6 @@ DAG developer notes
 * All example DAGs use ``catchup=False`` - they do not backfill.
 * Connection IDs in examples are configurable via Airflow connections;
   create the required connections before running.
-* Kerberos-keyed examples require additional runtime setup (keytabs,
-  ``kinit``, passwordless sudo).
 * Backup/restore examples require HDFS and HBase CLI installed on the
   worker host.
 * For connection pool examples, create both a plain and a pooled

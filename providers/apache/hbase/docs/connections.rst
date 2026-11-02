@@ -76,29 +76,9 @@ The following keys are recognized in the ``Connection.extra`` JSON.
 
 **Authentication**
 
-.. list-table::
-   :header-rows: 1
+.. note::
 
-   * - Key
-     - Type
-     - Default
-     - Description
-   * - ``auth_method``
-     - str
-     - ``None``
-     - Authentication method. Set to ``"GSSAPI"`` for Kerberos.
-   * - ``kerberos_service_name``
-     - str
-     - ``"hbase"``
-     - Kerberos service principal name.
-   * - ``kerberos_principal``
-     - str
-     - ``None``
-     - Kerberos principal (e.g., ``airflow@REALM``).
-   * - ``kerberos_keytab``
-     - str
-     - ``None``
-     - Path to Kerberos keytab file.
+    Authentication is not currently supported. Only plain connections are available.
 
 **SSL/TLS**
 
@@ -188,19 +168,6 @@ Connection extra templates
         "timeout": 30000,
         "namespace": "default"
     }
-
-**Kerberos (GSSAPI)**
-
-.. code-block:: json
-
-    {
-        "auth_method": "GSSAPI",
-        "kerberos_service_name": "hbase",
-        "kerberos_principal": "airflow@YOUR.REALM",
-        "kerberos_keytab": "/etc/security/keytabs/airflow.keytab",
-        "timeout": 30000
-    }
-
 **SSL/TLS**
 
 .. code-block:: json

@@ -81,8 +81,6 @@ Designed for backup/restore workflows that require direct HBase shell access.
   via ``hbase_cmd`` parameter)
 * Java runtime (``java_home`` parameter or ``JAVA_HOME`` env)
 * HBase installation directory (``hbase_home`` parameter or ``HBASE_HOME`` env)
-* For Kerberos-enabled clusters: passwordless ``sudo`` to run commands as
-  the ``hbase`` user, and valid keytab
 
 **Code example**
 
