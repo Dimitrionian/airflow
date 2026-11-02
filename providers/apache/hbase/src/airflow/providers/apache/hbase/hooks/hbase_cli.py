@@ -22,7 +22,6 @@ from __future__ import annotations
 import logging
 import os
 import shlex
-import socket
 import subprocess
 
 from airflow.providers.apache.hbase.version_compat import BaseHook, Connection
@@ -85,30 +84,11 @@ class HBaseCLIHook(BaseHook):
         """
         Build HBase command as list.
 
-        :param args: HBase command arguments (e.g., ["backup", "create", "full", "/backup", "-t", "table1"])
+        :param args: HBase command arguments
         :return: Full command as list
         """
         hbase_bin = f"{self.hbase_home}/bin/{self.hbase_cmd}"
         return [hbase_bin, *args]
-
-    def _build_kerberos_command(self, hbase_cmd: list[str], keytab: str, principal: str) -> list[str]:
-        """
-        Build command with Kerberos authentication.
-
-        :param hbase_cmd: HBase command as list
-        :param keytab: Path to keytab file
-        :param principal: Kerberos principal
-        :return: Full command with kinit and sudo
-        """
-        kinit_cmd = ["sudo", "-u", "hbase", "kinit", "-kt", keytab, principal]
-        sudo_hbase_cmd = ["sudo", "-u", "hbase", *hbase_cmd]
-        # Use shlex to chain commands with &&; shlex.quote preserves args with spaces/metacharacters
-        shell_str = (
-            " ".join(shlex.quote(arg) for arg in kinit_cmd)
-            + " && "
-            + " ".join(shlex.quote(arg) for arg in sudo_hbase_cmd)
-        )
-        return ["sh", "-c", shell_str]
 
     def _mask_cmd(self, cmd: list[str]) -> list[str]:
         """
@@ -133,23 +113,7 @@ class HBaseCLIHook(BaseHook):
         :param args: HBase command arguments as list
         :return: Tuple of (full_command, env)
         """
-        conn = self.get_conn()
-        extra = conn.extra_dejson if conn.extra else {}
-
-        hbase_cmd = self._build_hbase_command(args)
-
-        kerberos_keytab = extra.get("kerberos_keytab")
-        if kerberos_keytab:
-            hbase_keytab = extra.get("hbase_service_keytab", "/etc/security/keytabs/hbase.service.keytab")
-            hbase_principal: str | None = extra.get("hbase_service_principal")
-            if not hbase_principal:
-                hostname = socket.getfqdn()
-                realm = extra.get("kerberos_realm", "KRB5-TEST")
-                hbase_principal = f"hbase/{hostname}@{realm}"
-            full_command = self._build_kerberos_command(hbase_cmd, hbase_keytab, hbase_principal)
-            logger.info("Running as hbase user with Kerberos: %s", hbase_principal)
-        else:
-            full_command = hbase_cmd
+        full_command = self._build_hbase_command(args)
 
         env = os.environ.copy()
         env["JAVA_HOME"] = self.java_home

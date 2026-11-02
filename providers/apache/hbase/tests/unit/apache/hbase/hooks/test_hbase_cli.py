@@ -18,7 +18,6 @@
 
 from __future__ import annotations
 
-import shlex
 import subprocess
 from unittest.mock import MagicMock, patch
 
@@ -385,58 +384,6 @@ class TestHBaseCLIHook:
 
         call_args = mock_run.call_args[0][0]
         assert call_args[-3:] == ["backup", "set", "list"]
-
-    @patch(
-        "airflow.providers.apache.hbase.hooks.hbase_cli.socket.getfqdn", return_value="worker1.example.com"
-    )
-    @patch("airflow.providers.apache.hbase.hooks.hbase_cli.HBaseCLIHook.get_connection")
-    @patch("airflow.providers.apache.hbase.hooks.hbase_cli.subprocess.run")
-    def test_execute_command_kerberos(self, mock_run, mock_get_conn, mock_fqdn):
-        """Test that Kerberos mode wraps command with kinit and sudo."""
-        mock_get_conn.return_value = MagicMock(
-            extra='{"kerberos_keytab": "/etc/keytabs/airflow.keytab", "kerberos_realm": "EXAMPLE.COM"}',
-            extra_dejson={
-                "kerberos_keytab": "/etc/keytabs/airflow.keytab",
-                "kerberos_realm": "EXAMPLE.COM",
-            },
-        )
-        mock_run.return_value = MagicMock(returncode=0, stdout="OK")
-
-        hook = HBaseCLIHook(hbase_conn_id="hbase_default")
-        hook.execute_command("backup set list")
-
-        call_args = mock_run.call_args[0][0]
-        assert call_args[:2] == ["sh", "-c"]
-        shell_cmd = call_args[2]
-        assert "sudo -u hbase kinit -kt" in shell_cmd
-        assert "hbase/worker1.example.com@EXAMPLE.COM" in shell_cmd
-        assert "&& sudo -u hbase" in shell_cmd
-        assert "backup set list" in shell_cmd
-
-    @patch(
-        "airflow.providers.apache.hbase.hooks.hbase_cli.socket.getfqdn", return_value="worker1.example.com"
-    )
-    @patch("airflow.providers.apache.hbase.hooks.hbase_cli.HBaseCLIHook.get_connection")
-    @patch("airflow.providers.apache.hbase.hooks.hbase_cli.subprocess.run")
-    def test_execute_command_kerberos_with_spaces_in_args(self, mock_run, mock_get_conn, mock_fqdn):
-        """Test that Kerberos mode preserves arguments containing spaces."""
-        mock_get_conn.return_value = MagicMock(
-            extra='{"kerberos_keytab": "/etc/keytabs/airflow.keytab", "kerberos_realm": "EXAMPLE.COM"}',
-            extra_dejson={
-                "kerberos_keytab": "/etc/keytabs/airflow.keytab",
-                "kerberos_realm": "EXAMPLE.COM",
-            },
-        )
-        mock_run.return_value = MagicMock(returncode=0, stdout="OK")
-
-        hook = HBaseCLIHook(hbase_conn_id="hbase_default")
-        hook.execute_command(["backup", "create", "full", "/backup dir/my backup", "-t", "table1"])
-
-        call_args = mock_run.call_args[0][0]
-        shell_cmd = call_args[2]
-        tokens = shlex.split(shell_cmd)
-
-        assert "/backup dir/my backup" in tokens
 
     @patch("airflow.providers.apache.hbase.hooks.hbase_cli.HBaseCLIHook.get_connection")
     @pytest.mark.parametrize("command", ["", "   ", []])

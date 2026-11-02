@@ -20,25 +20,13 @@
 from __future__ import annotations
 
 import logging
-import os
 import ssl as ssl_module
-import subprocess
 import time
 from typing import Any
 
 from thrift.protocol import TBinaryProtocol
 from thrift.transport import THttpClient, TSocket, TSSLSocket, TTransport
 from thrift.transport.TTransport import TTransportException
-
-try:
-    import sasl
-    from thrift_sasl import TSaslClientTransport
-
-    SASL_AVAILABLE = True
-except ImportError:
-    SASL_AVAILABLE = False
-    sasl = None  # type: ignore
-    TSaslClientTransport = None  # type: ignore
 
 from airflow.providers.apache.hbase.connection_config import create_connection_config
 from airflow.providers.apache.hbase.hbase_thrift2_generated import THBaseService, ttypes
@@ -49,16 +37,12 @@ logger = logging.getLogger(__name__)
 class HBaseThrift2Client:
     """Lightweight HBase Thrift2 client."""
 
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def __init__(
         self,
         host: str,
         port: int = 9090,
         timeout: int = 30000,
         ssl_options: dict[str, Any] | None = None,
-        auth_method: str | None = None,
-        kerberos_service_name: str = "hbase",
-        kerberos_principal: str | None = None,
-        kerberos_keytab: str | None = None,
         namespace: str = "default",
         retry_max_attempts: int = 3,
         retry_delay: float = 1.0,
@@ -70,20 +54,15 @@ class HBaseThrift2Client:
 
         Args:
             host: HBase Thrift2 server host
-            port: HBase Thrift2 server port (default 9090 for Arenadata/Apache HBase)
+            port: HBase Thrift2 server port
             timeout: Connection timeout in milliseconds
             ssl_options: SSL options dict with keys:
                 ca_certs, cert_file, key_file, validate (optional)
-            auth_method: Authentication method ('GSSAPI' for Kerberos, None for no auth)
-            kerberos_service_name: Kerberos service name (default 'hbase')
-            kerberos_principal: Kerberos principal username (e.g. 'airflow@REALM')
-            kerberos_keytab: Path to keytab file (e.g. '/etc/security/keytabs/airflow.keytab')
             namespace: HBase namespace (default 'default')
             retry_max_attempts: Maximum number of connection attempts
             retry_delay: Initial delay between retry attempts in seconds
             retry_backoff_factor: Multiplier for delay after each failed attempt
-            use_http: Use HTTP transport instead of binary socket (required for SSL with
-            hbase.regionserver.thrift.http=true)
+            use_http: Use HTTP transport instead of binary socket
         """
         self.use_http = use_http
         self.config = create_connection_config(
@@ -91,10 +70,6 @@ class HBaseThrift2Client:
             port=port,
             timeout=timeout,
             ssl_options=ssl_options,
-            auth_method=auth_method,
-            kerberos_service_name=kerberos_service_name,
-            kerberos_principal=kerberos_principal,
-            kerberos_keytab=kerberos_keytab,
             namespace=namespace,
             retry_max_attempts=retry_max_attempts,
             retry_delay=retry_delay,
@@ -103,14 +78,8 @@ class HBaseThrift2Client:
         self._client: THBaseService.Client | None = None
         self._transport: Any = None
 
-        if auth_method and not SASL_AVAILABLE:
-            raise ImportError(
-                "thrift_sasl and sasl libraries are required for Kerberos authentication. "
-                "Install them with: pip install thrift_sasl sasl"
-            )
-
         logger.debug(
-            "HBaseThrift2Client initialized with ssl_options: %s, auth_method: %s", ssl_options, auth_method
+            "HBaseThrift2Client initialized with ssl_options: %s", ssl_options
         )
 
     def __enter__(self):
@@ -168,123 +137,6 @@ class HBaseThrift2Client:
 
         sock.setTimeout(self.config.timeout)
         return sock
-
-    def _setup_kerberos(self) -> None:  # pylint: disable=too-many-branches
-        """
-        Set up Kerberos authentication.
-
-        Raises:
-            RuntimeError: If Kerberos setup fails
-        """
-        # Set KRB5CCNAME BEFORE any GSSAPI operations
-        if "KRB5CCNAME" not in os.environ:
-            result = subprocess.run(["klist"], capture_output=True, text=True, check=False)
-            if result.returncode == 0:
-                for line in result.stdout.split("\n"):
-                    if line.startswith("Ticket cache:"):
-                        cache = line.split(":", 1)[1].strip()
-                        os.environ["KRB5CCNAME"] = cache
-                        logger.info("Set KRB5CCNAME=%s", cache)
-                        break
-
-        # Check if ticket exists and is valid
-        try:
-            subprocess.run(["klist", "-s"], check=True, capture_output=True)
-            logger.info("Using existing Kerberos ticket")
-        except subprocess.CalledProcessError:
-            # No valid ticket - try to get one with keytab
-            if self.config.kerberos_keytab:
-                principal = self.config.kerberos_principal
-                if not principal:
-                    # Try to get principal from keytab
-                    result = subprocess.run(
-                        ["klist", "-kt", self.config.kerberos_keytab],
-                        capture_output=True,
-                        text=True,
-                        check=False,
-                    )
-                    if result.returncode == 0:
-                        for line in result.stdout.split("\n"):
-                            if "@" in line and "KVNO" not in line:
-                                principal = line.split()[-1]
-                                break
-
-                if principal:
-                    kinit_cmd = ["kinit", "-kt", self.config.kerberos_keytab, principal]
-                    logger.info(
-                        "Getting Kerberos ticket using keytab: %s for principal: %s",
-                        self.config.kerberos_keytab,
-                        principal,
-                    )
-                    result = subprocess.run(kinit_cmd, capture_output=True, text=True, check=False)
-                    if result.returncode != 0:
-                        logger.error("kinit failed (exit code %d): %s", result.returncode, result.stderr)
-                        raise RuntimeError(  # pylint: disable=raise-missing-from
-                            f"Failed to obtain Kerberos ticket: {result.stderr}"
-                        )
-                    logger.info("Successfully obtained Kerberos ticket")
-                else:
-                    raise RuntimeError(  # pylint: disable=raise-missing-from
-                        "Could not determine principal from keytab"
-                    )
-            else:
-                logger.error("No Kerberos ticket found and no keytab specified")
-                raise RuntimeError(  # pylint: disable=raise-missing-from
-                    "No Kerberos credentials available. Please specify kerberos_keytab in connection extra."
-                )
-
-    def _create_sasl_transport(self, sock: TSocket.TSocket | TSSLSocket.TSSLSocket):
-        """
-        Create SASL transport for Kerberos authentication.
-
-        Args:
-            sock: Base socket
-
-        Returns:
-            SASL transport instance
-        """
-
-        def sasl_factory():
-            username = None
-            if self.config.kerberos_principal:
-                username = self.config.kerberos_principal.split("@")[0].split("/")[0]
-
-            logger.info("[SASL DEBUG] Creating SASL client")
-            logger.info(
-                "[SASL DEBUG] host=%s, service=%s, username=%s",
-                self.config.host,
-                self.config.kerberos_service_name,
-                username,
-            )
-            logger.info("[SASL DEBUG] kerberos_principal=%s", self.config.kerberos_principal)
-
-            sasl_client = sasl.Client()  # pylint: disable=no-member
-            sasl_client.setAttr("host", self.config.host)
-            sasl_client.setAttr("service", self.config.kerberos_service_name)
-            if username:
-                sasl_client.setAttr("username", username)
-            sasl_client.init()
-
-            logger.info("[SASL DEBUG] SASL client initialized")
-            return sasl_client
-
-        return TSaslClientTransport(sasl_factory, "GSSAPI", sock)
-
-    def _setup_kerberos_transport(self, sock: TSocket.TSocket | TSSLSocket.TSSLSocket) -> None:
-        """
-        Set up Kerberos transport and client.
-
-        Args:
-            sock: Base socket
-
-        Raises:
-            RuntimeError: If Kerberos setup fails
-        """
-        self._setup_kerberos()
-        self._transport = self._create_sasl_transport(sock)
-        protocol = TBinaryProtocol.TBinaryProtocol(self._transport)
-        self._client = THBaseService.Client(protocol)
-        self._transport.open()
 
     def _setup_simple_transport(self, sock: TSocket.TSocket | TSSLSocket.TSSLSocket) -> None:
         """
@@ -377,19 +229,7 @@ class HBaseThrift2Client:
                 else:
                     # Socket transport
                     sock = self._create_socket()
-
-                    if self.config.auth_method == "GSSAPI":
-                        self._setup_kerberos_transport(sock)
-                        self._test_connection()
-                        logger.info(
-                            "Successfully connected to HBase Thrift2 at %s:%s (SSL: %s, Auth: %s)",
-                            self.config.host,
-                            self.config.port,
-                            bool(self.config.ssl_options),
-                            self.config.auth_method,
-                        )
-                    else:
-                        self._setup_simple_transport(sock)
+                    self._setup_simple_transport(sock)
 
                 return
 

@@ -39,17 +39,13 @@ POOL_CONNECTION_TIMEOUT = float(os.getenv("HBASE_POOL_CONNECTION_TIMEOUT", "30.0
 class Thrift2ConnectionPool:
     """Connection pool for HBase Thrift2 clients."""
 
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+    def __init__(
         self,
         size: int,
         host: str,
         port: int = 9090,
         timeout: int = 30000,
         ssl_options: dict[str, Any] | None = None,
-        auth_method: str | None = None,
-        kerberos_service_name: str = "hbase",
-        kerberos_principal: str | None = None,
-        kerberos_keytab: str | None = None,
         namespace: str = "default",
         retry_max_attempts: int = 3,
         retry_delay: float = 1.0,
@@ -63,19 +59,14 @@ class Thrift2ConnectionPool:
         Args:
             size: Pool size
             host: HBase Thrift2 server host
-            port: HBase Thrift2 server port (default 9090 for Arenadata/Apache HBase)
+            port: HBase Thrift2 server port
             timeout: Connection timeout in milliseconds
             ssl_options: SSL options dict (optional)
-            auth_method: Authentication method ('GSSAPI' for Kerberos, None for no auth)
-            kerberos_service_name: Kerberos service name (default 'hbase')
-            kerberos_principal: Kerberos principal username (e.g. 'airflow@REALM')
-            kerberos_keytab: Path to keytab file (e.g. '/etc/security/keytabs/airflow.keytab')
             namespace: HBase namespace (default 'default')
             retry_max_attempts: Maximum number of connection attempts
             retry_delay: Initial delay between retry attempts in seconds
             retry_backoff_factor: Multiplier for delay after each failed attempt
-            use_http: Use HTTP transport instead of binary socket (required for SSL with
-            hbase.regionserver.thrift.http=true)
+            use_http: Use HTTP transport instead of binary socket
         """
         self.size = size
         self.borrow_timeout = borrow_timeout if borrow_timeout is not None else POOL_CONNECTION_TIMEOUT
@@ -84,10 +75,6 @@ class Thrift2ConnectionPool:
             port=port,
             timeout=timeout,
             ssl_options=ssl_options,
-            auth_method=auth_method,
-            kerberos_service_name=kerberos_service_name,
-            kerberos_principal=kerberos_principal,
-            kerberos_keytab=kerberos_keytab,
             namespace=namespace,
             retry_max_attempts=retry_max_attempts,
             retry_delay=retry_delay,
@@ -111,10 +98,6 @@ class Thrift2ConnectionPool:
             port=self.config.port,
             timeout=self.config.timeout,
             ssl_options=self.config.ssl_options,
-            auth_method=self.config.auth_method,
-            kerberos_service_name=self.config.kerberos_service_name,
-            kerberos_principal=self.config.kerberos_principal,
-            kerberos_keytab=self.config.kerberos_keytab,
             namespace=self.config.namespace,
             retry_max_attempts=self.config.retry_max_attempts,
             retry_delay=self.config.retry_delay,
@@ -214,17 +197,13 @@ def _cleanup_pools() -> None:
         _thrift2_pools.clear()
 
 
-def get_or_create_thrift2_pool(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+def get_or_create_thrift2_pool(
     conn_id: str,
     pool_size: int,
     host: str,
     port: int = 9090,
     timeout: int = 30000,
     ssl_options: dict[str, Any] | None = None,
-    auth_method: str | None = None,
-    kerberos_service_name: str = "hbase",
-    kerberos_principal: str | None = None,
-    kerberos_keytab: str | None = None,
     namespace: str = "default",
     retry_max_attempts: int = 3,
     retry_delay: float = 1.0,
@@ -242,16 +221,11 @@ def get_or_create_thrift2_pool(  # pylint: disable=too-many-arguments,too-many-p
         port: HBase Thrift2 server port
         timeout: Connection timeout in milliseconds
         ssl_options: SSL options dict (optional)
-        auth_method: Authentication method ('GSSAPI' for Kerberos, None for no auth)
-        kerberos_service_name: Kerberos service name (default 'hbase')
-        kerberos_principal: Kerberos principal username (e.g. 'airflow@REALM')
-        kerberos_keytab: Path to keytab file (e.g. '/etc/security/keytabs/airflow.keytab')
         namespace: HBase namespace (default 'default')
         retry_max_attempts: Maximum number of connection attempts
         retry_delay: Initial delay between retry attempts in seconds
         retry_backoff_factor: Multiplier for delay after each failed attempt
-        use_http: Use HTTP transport instead of binary socket (required for SSL with
-        hbase.regionserver.thrift.http=true)
+        use_http: Use HTTP transport instead of binary socket
 
     Returns:
         Thrift2ConnectionPool instance
@@ -264,10 +238,6 @@ def get_or_create_thrift2_pool(  # pylint: disable=too-many-arguments,too-many-p
                 port=port,
                 timeout=timeout,
                 ssl_options=ssl_options,
-                auth_method=auth_method,
-                kerberos_service_name=kerberos_service_name,
-                kerberos_principal=kerberos_principal,
-                kerberos_keytab=kerberos_keytab,
                 namespace=namespace,
                 retry_max_attempts=retry_max_attempts,
                 retry_delay=retry_delay,

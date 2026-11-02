@@ -22,19 +22,15 @@ from __future__ import annotations
 from typing import Any
 
 
-class HBaseConnectionConfig:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
+class HBaseConnectionConfig:  # pylint: disable=too-few-public-methods
     """Configuration for HBase Thrift2 connection."""
 
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def __init__(
         self,
         host: str,
         port: int = 9090,
         timeout: int = 30000,
         ssl_options: dict[str, Any] | None = None,
-        auth_method: str | None = None,
-        kerberos_service_name: str = "hbase",
-        kerberos_principal: str | None = None,
-        kerberos_keytab: str | None = None,
         namespace: str = "default",
         retry_max_attempts: int = 3,
         retry_delay: float = 1.0,
@@ -46,10 +42,6 @@ class HBaseConnectionConfig:  # pylint: disable=too-many-instance-attributes,too
         self.port = port
         self.timeout = timeout
         self.ssl_options = ssl_options
-        self.auth_method = auth_method
-        self.kerberos_service_name = kerberos_service_name
-        self.kerberos_principal = kerberos_principal
-        self.kerberos_keytab = kerberos_keytab
         self.namespace = namespace
         self.retry_max_attempts = retry_max_attempts
         self.retry_delay = retry_delay
@@ -57,15 +49,11 @@ class HBaseConnectionConfig:  # pylint: disable=too-many-instance-attributes,too
         self.use_http = use_http
 
 
-def create_connection_config(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+def create_connection_config(
     host: str,
     port: int = 9090,
     timeout: int = 30000,
     ssl_options: dict[str, Any] | None = None,
-    auth_method: str | None = None,
-    kerberos_service_name: str = "hbase",
-    kerberos_principal: str | None = None,
-    kerberos_keytab: str | None = None,
     namespace: str = "default",
     retry_max_attempts: int = 3,
     retry_delay: float = 1.0,
@@ -82,10 +70,6 @@ def create_connection_config(  # pylint: disable=too-many-arguments,too-many-pos
         port=port,
         timeout=timeout,
         ssl_options=ssl_options,
-        auth_method=auth_method,
-        kerberos_service_name=kerberos_service_name,
-        kerberos_principal=kerberos_principal,
-        kerberos_keytab=kerberos_keytab,
         namespace=namespace,
         retry_max_attempts=retry_max_attempts,
         retry_delay=retry_delay,

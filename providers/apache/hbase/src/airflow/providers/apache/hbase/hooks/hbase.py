@@ -69,19 +69,7 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
             # Get SSL options if configured
             ssl_options = self._get_ssl_options(conn.extra_dejson or {})
             use_http = conn.extra_dejson.get("use_http", False) if conn.extra_dejson else False
-            auth_method = None
-            kerberos_service_name = "hbase"
-            kerberos_principal = None
-            kerberos_keytab = None
-            namespace = "default"
-
-            if conn.extra_dejson:
-                # Get Kerberos authentication settings
-                auth_method = conn.extra_dejson.get("auth_method")
-                kerberos_service_name = conn.extra_dejson.get("kerberos_service_name", "hbase")
-                kerberos_principal = conn.extra_dejson.get("kerberos_principal")
-                kerberos_keytab = conn.extra_dejson.get("kerberos_keytab")
-                namespace = conn.extra_dejson.get("namespace", "default")
+            namespace = conn.extra_dejson.get("namespace", "default") if conn.extra_dejson else "default"
 
             if ssl_options:
                 self.log.info(
@@ -89,15 +77,11 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
                     {k: v for k, v in ssl_options.items() if k != "key_file"},
                 )
 
-            if auth_method:
-                self.log.info("Authentication enabled: %s (service: %s)", auth_method, kerberos_service_name)
-
             pool_config = self._get_pool_config(conn.extra_dejson or {})
 
             if pool_config.get("enabled", False):
                 # Use connection pool for parallel processing
                 pool_size = pool_config.get("size", 10)
-                # pylint: disable=duplicate-code
                 pool = get_or_create_thrift2_pool(
                     self.hbase_conn_id,
                     pool_size,
@@ -105,34 +89,23 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
                     port,
                     timeout,
                     ssl_options,
-                    auth_method=auth_method,
-                    kerberos_service_name=kerberos_service_name,
-                    kerberos_principal=kerberos_principal,
-                    kerberos_keytab=kerberos_keytab,
                     namespace=namespace,
                     use_http=use_http,
                     borrow_timeout=float(pool_config.get("timeout", 30)),
                     **retry_config,
                 )
-                # pylint: enable=duplicate-code
                 self._strategy = PooledThrift2Strategy(pool, self.log)
             else:
                 # Use single connection
-                # pylint: disable=duplicate-code
                 client = HBaseThrift2Client(
                     host=host,
                     port=port,
                     timeout=timeout,
                     ssl_options=ssl_options,
-                    auth_method=auth_method,
-                    kerberos_service_name=kerberos_service_name,
-                    kerberos_principal=kerberos_principal,
-                    kerberos_keytab=kerberos_keytab,
                     namespace=namespace,
                     use_http=use_http,
                     **retry_config,
                 )
-                # pylint: enable=duplicate-code
                 client.open()
                 self._strategy = Thrift2Strategy(client, self.log)
         return self._strategy
