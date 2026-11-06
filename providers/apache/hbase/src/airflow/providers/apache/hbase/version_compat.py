@@ -23,14 +23,12 @@
 #
 from __future__ import annotations
 
-from airflow.providers.common.compat.sdk import (
-    BaseHook,
-    BaseOperator,
-    BaseSensorOperator,
-    Connection,
-    Context,
-    Variable,
-)
+from airflow.hooks.base import BaseHook
+from airflow.models.baseoperator import BaseOperator
+from airflow.models.connection import Connection
+from airflow.models.variable import Variable
+from airflow.sensors.base import BaseSensorOperator
+from airflow.utils.context import Context
 
 
 def get_base_airflow_version_tuple() -> tuple[int, int, int]:
