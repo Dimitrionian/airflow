@@ -237,6 +237,10 @@ Backup/restore operators (CLI-based)
 These operators use ``HBaseCLIHook`` and require the HBase CLI and Java
 on the worker host.
 
+``HBaseCreateBackupOperator`` and ``HBaseRestoreOperator`` implement ``on_kill``:
+when Airflow sends SIGTERM to the worker (e.g. task timeout or manual kill),
+the running HBase CLI subprocess is terminated immediately.
+
 **HBaseBackupSetOperator**
 
 Create or list backup sets.
