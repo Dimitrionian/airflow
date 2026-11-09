@@ -372,7 +372,6 @@ class HBaseCreateBackupOperator(BaseOperator):
         backup_set_name: str | None = None,
         tables: list[str] | None = None,
         workers: int = 3,
-        ignore_checksum: bool = False,
         hbase_conn_id: str = HBaseThriftHook.default_conn_name,
         **kwargs,
     ) -> None:
@@ -382,7 +381,6 @@ class HBaseCreateBackupOperator(BaseOperator):
         self.backup_set_name = backup_set_name
         self.tables = tables
         self.workers = workers
-        self.ignore_checksum = ignore_checksum
         self.hbase_conn_id = hbase_conn_id
 
     def execute(self, context: Context | None = None) -> str:
@@ -449,7 +447,6 @@ class HBaseRestoreOperator(BaseOperator):
         backup_set_name: str | None = None,
         tables: list[str] | None = None,
         overwrite: bool = False,
-        ignore_checksum: bool = False,
         hbase_conn_id: str = HBaseThriftHook.default_conn_name,
         **kwargs,
     ) -> None:
@@ -459,7 +456,6 @@ class HBaseRestoreOperator(BaseOperator):
         self.backup_set_name = backup_set_name
         self.tables = tables
         self.overwrite = overwrite
-        self.ignore_checksum = ignore_checksum
         self.hbase_conn_id = hbase_conn_id
 
     def execute(self, context: Context | None = None) -> str:
