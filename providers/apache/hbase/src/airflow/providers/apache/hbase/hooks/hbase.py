@@ -55,7 +55,7 @@ class HBaseThriftHook(BaseHook):
         self.hbase_conn_id = hbase_conn_id
         self._strategy: HBaseStrategy | None = None
 
-    def _get_strategy(self) -> HBaseStrategy:  # noqa: PLR0914
+    def _get_strategy(self) -> HBaseStrategy:
         """Get Thrift2 strategy (single or pooled)."""
         if self._strategy is None:
             conn = self.get_connection(self.hbase_conn_id)
@@ -155,7 +155,7 @@ class HBaseThriftHook(BaseHook):
         """Verify HBase Thrift2 connectivity with a read-only probe."""
         try:
             self.table_exists("airflow_connection_test")
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:
             return False, f"HBase Thrift2 connection test failed: {err}"
         return True, "HBase Thrift2 connection test succeeded."
 
@@ -178,7 +178,7 @@ class HBaseThriftHook(BaseHook):
         """Get row from HBase table."""
         return self._get_strategy().get_row(table_name, row_key, columns)
 
-    def scan_table(  # noqa: PLR0913
+    def scan_table(
         self,
         table_name: str,
         row_start: str | None = None,
@@ -228,7 +228,7 @@ class HBaseThriftHook(BaseHook):
         """Return HBase specific information for OpenLineage."""
         try:
             from airflow.providers.openlineage.sqlparser import (
-                DatabaseInfo,  # noqa: PLC0415
+                DatabaseInfo,
             )
 
             return DatabaseInfo(

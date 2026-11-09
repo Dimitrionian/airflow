@@ -105,7 +105,7 @@ class HBaseStrategy(ABC):
         """Delete multiple rows in batch."""
 
     @abstractmethod
-    def scan_table(  # noqa: PLR0913
+    def scan_table(
         self,
         table_name: str,
         row_start: str | None = None,
@@ -124,7 +124,7 @@ class HBaseStrategy(ABC):
         """List backup sets."""
 
     @abstractmethod
-    def create_full_backup(  # noqa: PLR0913
+    def create_full_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,
@@ -134,7 +134,7 @@ class HBaseStrategy(ABC):
         """Create full backup."""
 
     @abstractmethod
-    def create_incremental_backup(  # noqa: PLR0913
+    def create_incremental_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,
@@ -258,7 +258,7 @@ class Thrift2Strategy(HBaseStrategy):
         for chunk in chunks:
             process_chunk(chunk)
 
-    def scan_table(  # noqa: PLR0913
+    def scan_table(
         self,
         table_name: str,
         row_start: str | None = None,
@@ -299,7 +299,7 @@ class Thrift2Strategy(HBaseStrategy):
         """List backup sets - not supported in Thrift2 mode."""
         raise NotImplementedError("Backup operations require SSH connection mode")
 
-    def create_full_backup(  # noqa: PLR0913
+    def create_full_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,
@@ -309,7 +309,7 @@ class Thrift2Strategy(HBaseStrategy):
         """Create full backup - not supported in Thrift2 mode."""
         raise NotImplementedError("Backup operations require SSH connection mode")
 
-    def create_incremental_backup(  # noqa: PLR0913
+    def create_incremental_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,
@@ -453,7 +453,7 @@ class PooledThrift2Strategy(HBaseStrategy):
             for chunk in chunks:
                 process_chunk(chunk)
 
-    def scan_table(  # noqa: PLR0913
+    def scan_table(
         self,
         table_name: str,
         row_start: str | None = None,
@@ -516,7 +516,7 @@ class PooledThrift2Strategy(HBaseStrategy):
         """List backup sets - not supported in Thrift2 mode."""
         raise NotImplementedError("Backup operations require SSH connection mode")
 
-    def create_full_backup(  # noqa: PLR0913
+    def create_full_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,
@@ -526,7 +526,7 @@ class PooledThrift2Strategy(HBaseStrategy):
         """Create full backup - not supported in Thrift2 mode."""
         raise NotImplementedError("Backup operations require SSH connection mode")
 
-    def create_incremental_backup(  # noqa: PLR0913
+    def create_incremental_backup(
         self,
         backup_root: str,
         backup_set_name: str | None = None,

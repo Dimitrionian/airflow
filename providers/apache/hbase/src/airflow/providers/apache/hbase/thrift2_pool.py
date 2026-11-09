@@ -88,7 +88,7 @@ class Thrift2ConnectionPool:
         """Cleanup connections when pool is garbage collected."""
         try:
             self.close_all()
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to close connections during pool cleanup", exc_info=True)
 
     def _create_connection(self) -> HBaseThrift2Client:
@@ -110,12 +110,12 @@ class Thrift2ConnectionPool:
     def _is_connection_alive(self, client: HBaseThrift2Client) -> bool:
         """Check if connection is alive by testing request to server."""
         try:
-            if client._client is None:  # noqa: SLF001
+            if client._client is None:
                 return False
             # Test connection with lightweight request
-            client._client.getTableNamesByPattern(regex=None, includeSysTables=False)  # noqa: SLF001
+            client._client.getTableNamesByPattern(regex=None, includeSysTables=False)
             return True
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.debug("Connection check failed: %s", e)
             return False
 
@@ -147,7 +147,7 @@ class Thrift2ConnectionPool:
                     logger.debug("Creating new connection")
                     try:
                         client = self._create_connection()
-                    except Exception as e:  # noqa: BLE001
+                    except Exception as e:
                         self._semaphore.release()
                         logger.error("Failed to create connection: %s", e)
                         acquired = False
@@ -164,7 +164,7 @@ class Thrift2ConnectionPool:
 
             yield client
 
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error("Connection error: %s", e)
             if client:
                 with suppress(Exception):
