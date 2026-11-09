@@ -76,9 +76,14 @@ The following keys are recognized in the ``Connection.extra`` JSON.
 
 **Authentication**
 
-.. note::
+.. warning::
 
-    Authentication is not currently supported. Only plain connections are available.
+    **Kerberos-secured clusters are not supported.**
+
+    This provider connects via the Thrift2 protocol over buffered, framed, or HTTP
+    transport with optional SSL/TLS. SASL-based authentication (required for
+    Kerberos Security) is not implemented. Attempting to connect to a
+    Kerberized HBase cluster will result in a connection error
 
 **SSL/TLS**
 
