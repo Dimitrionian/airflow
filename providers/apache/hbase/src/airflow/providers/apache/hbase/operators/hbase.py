@@ -382,10 +382,17 @@ class HBaseCreateBackupOperator(BaseOperator):
         self.tables = tables
         self.workers = workers
         self.hbase_conn_id = hbase_conn_id
+        self._hook: HBaseCLIHook | None = None
+
+    def on_kill(self) -> None:
+        """Kill running backup process."""
+        if self._hook:
+            self._hook.on_kill()
 
     def execute(self, context: Context | None = None) -> str:
         """Execute the operator."""
         hook = HBaseCLIHook(hbase_conn_id=self.hbase_conn_id)
+        self._hook = hook
 
         try:
             backup_type = BackupType(self.backup_type)
@@ -457,10 +464,17 @@ class HBaseRestoreOperator(BaseOperator):
         self.tables = tables
         self.overwrite = overwrite
         self.hbase_conn_id = hbase_conn_id
+        self._hook: HBaseCLIHook | None = None
+
+    def on_kill(self) -> None:
+        """Kill running restore process."""
+        if self._hook:
+            self._hook.on_kill()
 
     def execute(self, context: Context | None = None) -> str:
         """Execute the operator."""
         hook = HBaseCLIHook(hbase_conn_id=self.hbase_conn_id)
+        self._hook = hook
 
         return hook.restore_backup(
             backup_root=self.backup_path,

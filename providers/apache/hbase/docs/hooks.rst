@@ -74,11 +74,14 @@ Designed for backup/restore workflows that require direct HBase shell access.
 * **Restore operations**: ``restore_backup``
 * **History/describe**: ``get_backup_history``, ``describe_backup``
 * **Arbitrary commands**: ``execute_command`` for any HBase CLI command
+* **Lifecycle**: ``on_kill`` — terminates a running backup/restore process when
+  the task is killed by Airflow
 
 **Prerequisites**
 
-* HBase CLI tools installed on the worker (``hbase`` in PATH or configured
-  via ``hbase_cmd`` parameter)
+* HBase CLI tools installed on the worker. The binary name defaults to ``hbase``
+  and can be overridden via the ``hbase_cmd`` constructor parameter or the
+  ``HBASE_CMD`` environment variable.
 * Java runtime (``java_home`` parameter or ``JAVA_HOME`` env)
 * HBase installation directory (``hbase_home`` parameter or ``HBASE_HOME`` env)
 

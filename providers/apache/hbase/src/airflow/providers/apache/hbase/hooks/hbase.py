@@ -194,7 +194,7 @@ class HBaseThriftHook(BaseHook):
         table_name: str,
         rows: list[dict[str, Any]],
         batch_size: int = 200,
-        max_workers: int = 1,
+        max_workers: int = 4,
     ) -> None:
         """Insert multiple rows in batch."""
         self._get_strategy().batch_put_rows(table_name, rows, batch_size, max_workers)
