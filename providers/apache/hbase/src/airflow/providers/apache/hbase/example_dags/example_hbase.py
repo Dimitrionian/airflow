@@ -127,6 +127,6 @@ delete_table = HBaseDeleteTableOperator(
 )
 
 # Set dependencies
-(  # pylint: disable=pointless-statement
+(
     delete_table_cleanup >> create_table >> check_table >> put_data >> check_row >> delete_table
 )

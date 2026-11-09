@@ -163,8 +163,8 @@ with DAG(
     )
 
     # Define task dependencies
-    (cleanup_stuck_sessions >> create_backup_set >> decide_backup)  # pylint: disable=pointless-statement
-    (decide_backup >> [create_full_backup, create_incremental_backup])  # pylint: disable=pointless-statement
-    (  # pylint: disable=pointless-statement
+    (cleanup_stuck_sessions >> create_backup_set >> decide_backup)
+    (decide_backup >> [create_full_backup, create_incremental_backup])
+    (
         [create_full_backup, create_incremental_backup] >> get_backup_history
     )

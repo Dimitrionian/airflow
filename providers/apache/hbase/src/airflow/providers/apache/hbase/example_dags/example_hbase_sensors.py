@@ -180,6 +180,6 @@ with DAG(
     # In real scenario, simulate_external would be a separate DAG
     # and we'd only have:
     # wait_for_table >> wait_for_data_ready >> process >> cleanup
-    (  # pylint: disable=pointless-statement
+    (
         cleanup_existing >> simulate_external >> wait_for_table >> wait_for_data_ready >> process >> cleanup
     )

@@ -178,4 +178,4 @@ verify_data = PythonOperator(
 )
 
 # Define task dependencies
-delete_table >> restore_backup >> verify_data  # pylint: disable=pointless-statement
+delete_table >> restore_backup >> verify_data

@@ -104,4 +104,4 @@ with DAG(
     )
 
     # Define task dependencies
-    delete_table_cleanup >> create_table >> put_data  # pylint: disable=pointless-statement
+    delete_table_cleanup >> create_table >> put_data

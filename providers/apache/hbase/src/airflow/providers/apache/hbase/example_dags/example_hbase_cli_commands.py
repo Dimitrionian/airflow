@@ -139,4 +139,4 @@ with DAG(
         python_callable=verify_deletion,
     )
 
-    describe_set >> get_history >> delete_set >> verify  # pylint: disable=pointless-statement
+    describe_set >> get_history >> delete_set >> verify
