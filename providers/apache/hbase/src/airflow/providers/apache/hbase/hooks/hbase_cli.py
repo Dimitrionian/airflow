@@ -38,10 +38,6 @@ class HBaseCLIHook(BaseHook):
     **Requirements:**
 
     - HBase CLI tools must be installed on the Airflow worker
-    - For Kerberos-enabled clusters: passwordless sudo access to run commands as 'hbase' user
-      (required because backup operations need access to HBase WAL files)
-    - Sudoers configuration example:
-      ``airflow ALL=(hbase) NOPASSWD: /usr/bin/kinit, /usr/lib/hbase/bin/hbase``
 
     :param hbase_conn_id: Connection ID for HBase.
     :param hbase_cmd: HBase command name
@@ -78,8 +74,6 @@ class HBaseCLIHook(BaseHook):
             self._connection = self.get_connection(self.hbase_conn_id)
         return self._connection
 
-    _HBASE_SECURITY_OPTS = {"-kt", "--keytab", "-k"}
-
     def _build_hbase_command(self, args: list[str]) -> list[str]:
         """
         Build HBase command as list.
@@ -89,22 +83,6 @@ class HBaseCLIHook(BaseHook):
         """
         hbase_bin = f"{self.hbase_home}/bin/{self.hbase_cmd}"
         return [hbase_bin, *args]
-
-    def _mask_cmd(self, cmd: list[str]) -> list[str]:
-        """
-        Mask sensitive parameters in command for logging.
-
-        :param cmd: Command as list
-        :return: Masked command as list
-        """
-        masked = cmd.copy()
-        for idx, value in enumerate(masked):
-            if value in self._HBASE_SECURITY_OPTS and idx + 1 < len(masked):
-                masked[idx + 1] = "********"
-            # Mask keytab paths
-            elif ".keytab" in value:
-                masked[idx] = "***KEYTAB***"
-        return masked
 
     def _prepare_command(self, args: list[str]) -> tuple[list[str], dict[str, str]]:
         """
@@ -119,7 +97,7 @@ class HBaseCLIHook(BaseHook):
         env["JAVA_HOME"] = self.java_home
         env["HBASE_OPTS"] = env.get("HBASE_OPTS", "") + " -Dslf4j.internal.verbosity=warn"
 
-        logger.info("Executing HBase command: %s", " ".join(self._mask_cmd(full_command)))
+        logger.info("Executing HBase command: %s", " ".join(full_command))
 
         return full_command, env
 

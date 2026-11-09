@@ -43,94 +43,18 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Resources
+   :caption: References
 
-   Installing from sources <installing-providers-from-sources>
+   Python API <_api/airflow/providers/apache/hbase/index>
 
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Commits
+   :caption: Resources
 
-   Detailed list of commits <commits>
-
-
-Package overview
-----------------
-
-`Apache HBase <https://hbase.apache.org/>`__ provider for Airflow by Arenadata.
-
-Release: ``1.1.0``
-
-Python package path:
-``airflow.providers.apache.hbase``
-
-Current provider scope
-----------------------
-
-This provider supports HBase interactions through two protocol layers:
-
-* **HBase Thrift2 protocol** for table CRUD, scans, and batch operations
-* **HBase CLI (command-line)** for administrative backup/restore workflows
-
-The Thrift2 layer talks to a running ``HBase Thrift2`` server via the Apache
-Thrift binary protocol. The CLI layer runs ``hbase backup`` commands on the
-worker host through ``HBaseCLIHook``.
-
-Both layers support plain and SSL/TLS connections,
-configured via the Airflow connection extra.
-
-Runtime deployment model
-------------------------
-
-This provider does not provision HBase client runtime by itself.
-It is expected to run in one of the following environments:
-
-* on a shared worker host or container image where HBase client tools
-  (including ``hbase`` CLI and Java runtime) are already installed
-  together with Airflow;
-* on a worker host or container image prepared manually with the required
-  HBase runtime files.
-
-For manual preparation, the worker runtime should be provisioned with:
-
-* Java runtime installed on the worker host or available in the container image;
-* HBase CLI tools copied to a stable location such as ``/usr/lib/hbase``;
-* HBase client configuration available at ``/etc/hbase/conf`` or a
-  custom directory pointed to by ``HBASE_HOME`` and ``HBASE_CONF_DIR``;
-* ``hbase`` available in ``PATH`` for CLI-based backup/restore operations.
-
-Quick start checklist
----------------------
-
-For a minimal working setup:
-
-1. Ensure a HBase Thrift2 server is running and accessible from the worker.
-2. Create an ``hbase`` connection in Airflow with host, port (default 9090),
-   and any required extra parameters (SSL).
-3. Run the ``example_hbase`` DAG to verify connectivity.
-
-Requirements
-------------
-
-* ``apache-airflow`` >= ``2.11.0``
-* ``thrift`` >= ``0.13.0``
-
-Connection contract
--------------------
-
-Runtime connection parsing is centralized in:
-``airflow/providers/apache/hbase/connection_config.py``
-(``HBaseConnectionConfig``).
-
-Built-in provider runtime uses typed configuration objects.
-Raw ``Connection.extra`` is available for custom DAG-level extensions.
-
-Example DAGs
-------------
-
-Example DAGs are located in:
-``airflow/providers/apache/hbase/src/airflow/providers/apache/hbase/example_dags``.
+   Example DAGs <https://github.com/apache/airflow/tree/providers-apache-hbase/|version|/providers/apache/hbase/src/airflow/providers/apache/hbase/example_dags>
+   PyPI Repository <https://pypi.org/project/apache-airflow-providers-apache-hbase/>
+   Installing from sources <installing-providers-from-sources>
 
 .. THE REMAINDER OF THE FILE IS AUTOMATICALLY GENERATED. IT WILL BE OVERWRITTEN AT RELEASE TIME!
 
