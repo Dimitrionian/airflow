@@ -27,7 +27,7 @@ import threading
 from contextlib import contextmanager, suppress
 from typing import Any
 
-from airflow.providers.apache.hbase.client import HBaseThrift2Client  # pylint: disable=import-error
+from airflow.providers.apache.hbase.client import HBaseThrift2Client
 from airflow.providers.apache.hbase.connection_config import create_connection_config
 
 logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ class Thrift2ConnectionPool:
         """Cleanup connections when pool is garbage collected."""
         try:
             self.close_all()
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:  # noqa: BLE001
             logger.debug("Failed to close connections during pool cleanup", exc_info=True)
 
     def _create_connection(self) -> HBaseThrift2Client:
@@ -110,12 +110,12 @@ class Thrift2ConnectionPool:
     def _is_connection_alive(self, client: HBaseThrift2Client) -> bool:
         """Check if connection is alive by testing request to server."""
         try:
-            if client._client is None:  # pylint: disable=protected-access
+            if client._client is None:  # noqa: SLF001
                 return False
             # Test connection with lightweight request
-            client._client.getTableNamesByPattern(regex=None, includeSysTables=False)  # pylint: disable=protected-access
+            client._client.getTableNamesByPattern(regex=None, includeSysTables=False)  # noqa: SLF001
             return True
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # noqa: BLE001
             logger.debug("Connection check failed: %s", e)
             return False
 
@@ -147,7 +147,7 @@ class Thrift2ConnectionPool:
                     logger.debug("Creating new connection")
                     try:
                         client = self._create_connection()
-                    except Exception as e:  # pylint: disable=broad-exception-caught
+                    except Exception as e:  # noqa: BLE001
                         self._semaphore.release()
                         logger.error("Failed to create connection: %s", e)
                         acquired = False
@@ -164,7 +164,7 @@ class Thrift2ConnectionPool:
 
             yield client
 
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # noqa: BLE001
             logger.error("Connection error: %s", e)
             if client:
                 with suppress(Exception):

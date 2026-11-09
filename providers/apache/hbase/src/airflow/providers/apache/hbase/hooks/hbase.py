@@ -33,7 +33,7 @@ from airflow.providers.apache.hbase.thrift2_pool import get_or_create_thrift2_po
 from airflow.providers.apache.hbase.version_compat import BaseHook
 
 
-class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
+class HBaseThriftHook(BaseHook):
     """
     Wrapper for connection to interact with HBase via Thrift2 protocol.
 
@@ -55,7 +55,7 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
         self.hbase_conn_id = hbase_conn_id
         self._strategy: HBaseStrategy | None = None
 
-    def _get_strategy(self) -> HBaseStrategy:  # pylint: disable=too-many-locals
+    def _get_strategy(self) -> HBaseStrategy:  # noqa: PLR0914
         """Get Thrift2 strategy (single or pooled)."""
         if self._strategy is None:
             conn = self.get_connection(self.hbase_conn_id)
@@ -155,7 +155,7 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
         """Verify HBase Thrift2 connectivity with a read-only probe."""
         try:
             self.table_exists("airflow_connection_test")
-        except Exception as err:  # pylint: disable=broad-exception-caught
+        except Exception as err:  # noqa: BLE001
             return False, f"HBase Thrift2 connection test failed: {err}"
         return True, "HBase Thrift2 connection test succeeded."
 
@@ -178,7 +178,7 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
         """Get row from HBase table."""
         return self._get_strategy().get_row(table_name, row_key, columns)
 
-    def scan_table(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def scan_table(  # noqa: PLR0913
         self,
         table_name: str,
         row_start: str | None = None,
@@ -228,7 +228,7 @@ class HBaseThriftHook(BaseHook):  # pylint: disable=abstract-method
         """Return HBase specific information for OpenLineage."""
         try:
             from airflow.providers.openlineage.sqlparser import (
-                DatabaseInfo,  # pylint: disable=import-outside-toplevel
+                DatabaseInfo,  # noqa: PLC0415
             )
 
             return DatabaseInfo(

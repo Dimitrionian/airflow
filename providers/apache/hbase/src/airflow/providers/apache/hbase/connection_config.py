@@ -22,7 +22,7 @@ from __future__ import annotations
 from typing import Any
 
 
-class HBaseConnectionConfig:  # pylint: disable=too-few-public-methods
+class HBaseConnectionConfig:
     """Configuration for HBase Thrift2 connection."""
 
     def __init__(

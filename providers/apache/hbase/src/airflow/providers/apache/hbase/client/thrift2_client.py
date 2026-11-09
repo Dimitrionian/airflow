@@ -481,7 +481,7 @@ class HBaseThrift2Client:
 
         self._client.deleteMultiple(self._resolve_table_name(table_name), tdeletes)
 
-    def scan(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def scan(  # noqa: PLR0913
         self,
         table_name: str,
         start_row: str | None = None,

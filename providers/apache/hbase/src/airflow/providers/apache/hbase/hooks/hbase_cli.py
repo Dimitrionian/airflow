@@ -156,7 +156,7 @@ class HBaseCLIHook(BaseHook):
         full_command, env = self._prepare_command(args)
 
         try:
-            self._process = subprocess.Popen(  # pylint: disable=consider-using-with
+            self._process = subprocess.Popen(  # noqa: SIM115
                 full_command,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -303,7 +303,7 @@ class HBaseCLIHook(BaseHook):
         cmd = ["backup", "describe", backup_id]
         return self._execute_hbase_command(cmd)
 
-    def restore_backup(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def restore_backup(  # noqa: PLR0913
         self,
         backup_root: str,
         backup_id: str,

@@ -25,7 +25,7 @@ from airflow.providers.apache.hbase.hooks.hbase import HBaseThriftHook
 from airflow.providers.apache.hbase.version_compat import BaseSensorOperator, Context
 
 
-class HBaseTableSensor(BaseSensorOperator):  # pylint: disable=too-few-public-methods,too-many-ancestors
+class HBaseTableSensor(BaseSensorOperator):
     """
     Sensor to check if HBase table exists.
 
@@ -53,7 +53,7 @@ class HBaseTableSensor(BaseSensorOperator):  # pylint: disable=too-few-public-me
         return exists
 
 
-class HBaseRowSensor(BaseSensorOperator):  # pylint: disable=too-few-public-methods,too-many-ancestors
+class HBaseRowSensor(BaseSensorOperator):
     """
     Sensor to check if specific row exists in HBase table.
 
