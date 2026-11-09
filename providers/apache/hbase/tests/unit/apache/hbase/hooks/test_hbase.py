@@ -363,6 +363,28 @@ class TestSSLConfiguration:
 
     @patch("airflow.providers.apache.hbase.client.thrift2_client.HBaseThrift2Client.open")
     @patch.object(HBaseThriftHook, "get_connection")
+    def test_ssl_flat_format(self, mock_get_connection, mock_open):
+        """Test SSL options specified in flat format are parsed correctly."""
+        mock_conn = Connection(
+            conn_id="hbase_ssl_flat",
+            conn_type="hbase",
+            host="localhost",
+            port=9090,
+            extra='{"ca_certs": "/path/to/ca.crt", "cert_file": "/path/to/client.crt", "key_file": "/path/to/client.key", "validate": true}',
+        )
+        mock_get_connection.return_value = mock_conn
+
+        hook = HBaseThriftHook()
+        strategy = hook._get_strategy()
+
+        assert strategy.client.config.ssl_options is not None
+        assert strategy.client.config.ssl_options["ca_certs"] == "/path/to/ca.crt"
+        assert strategy.client.config.ssl_options["cert_file"] == "/path/to/client.crt"
+        assert strategy.client.config.ssl_options["key_file"] == "/path/to/client.key"
+        assert strategy.client.config.ssl_options["validate"] is True
+
+    @patch("airflow.providers.apache.hbase.client.thrift2_client.HBaseThrift2Client.open")
+    @patch.object(HBaseThriftHook, "get_connection")
     def test_ssl_disabled_by_default(self, mock_get_connection, mock_open):
         """Test SSL is disabled by default."""
         mock_conn = Connection(
