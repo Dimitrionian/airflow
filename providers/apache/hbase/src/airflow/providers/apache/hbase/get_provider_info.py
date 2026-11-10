@@ -25,7 +25,7 @@ def get_provider_info():
     return {
         "package-name": "apache-airflow-providers-apache-hbase",
         "name": "Apache HBase",
-        "description": "`Apache HBase <https://hbase.apache.org/>`__ \n",
+        "description": "`Apache HBase <https://hbase.apache.org/>`__\n",
         "integrations": [
             {
                 "integration-name": "HBase",
