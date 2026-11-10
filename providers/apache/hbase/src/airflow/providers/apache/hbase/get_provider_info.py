@@ -54,6 +54,7 @@ def get_provider_info():
                 "python-modules": [
                     "airflow.providers.apache.hbase.hooks.hbase",
                     "airflow.providers.apache.hbase.hooks.hbase_cli",
+                    "airflow.providers.apache.hbase.hooks.hbase_strategy",
                 ],
             }
         ],
@@ -61,6 +62,15 @@ def get_provider_info():
             {
                 "hook-class-name": "airflow.providers.apache.hbase.hooks.hbase.HBaseThriftHook",
                 "connection-type": "hbase",
+                "ui-field-behaviour": {
+                    "hidden-fields": ["schema"],
+                    "relabeling": {"host": "HBase Thrift2 Server Host", "port": "HBase Thrift2 Server Port"},
+                    "placeholders": {
+                        "host": "localhost",
+                        "port": "9090",
+                        "extra": '{\n  "ssl_options": {\n    "ca_certs": "/path/to/ca.crt",\n    "cert_file": "/path/to/client.crt",\n    "key_file": "/path/to/client.key",\n    "validate": true\n  },\n  "auth_method": "GSSAPI",\n  "kerberos_service_name": "hbase",\n  "timeout": 30000,\n  "retry_max_attempts": 3,\n  "retry_delay": 1.0,\n  "retry_backoff_factor": 2.0,\n  "connection_pool": {\n    "enabled": false,\n    "size": 10,\n    "timeout": 30\n  }\n}\n',
+                    },
+                },
             },
             {
                 "hook-class-name": "airflow.providers.apache.hbase.hooks.hbase_cli.HBaseCLIHook",
