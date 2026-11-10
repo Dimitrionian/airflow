@@ -165,6 +165,4 @@ with DAG(
     # Define task dependencies
     (cleanup_stuck_sessions >> create_backup_set >> decide_backup)
     (decide_backup >> [create_full_backup, create_incremental_backup])
-    (
-        [create_full_backup, create_incremental_backup] >> get_backup_history
-    )
+    ([create_full_backup, create_incremental_backup] >> get_backup_history)

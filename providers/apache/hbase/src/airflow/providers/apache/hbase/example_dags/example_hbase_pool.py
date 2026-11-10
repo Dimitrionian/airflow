@@ -225,6 +225,4 @@ with DAG(
         python_callable=cleanup_table,
     )
 
-    (
-        setup >> [bench_single, bench_pooled] >> bench_large >> verify >> cleanup
-    )
+    (setup >> [bench_single, bench_pooled] >> bench_large >> verify >> cleanup)

@@ -127,6 +127,4 @@ delete_table = HBaseDeleteTableOperator(
 )
 
 # Set dependencies
-(
-    delete_table_cleanup >> create_table >> check_table >> put_data >> check_row >> delete_table
-)
+(delete_table_cleanup >> create_table >> check_table >> put_data >> check_row >> delete_table)

@@ -78,9 +78,7 @@ class HBaseThrift2Client:
         self._client: THBaseService.Client | None = None
         self._transport: Any = None
 
-        logger.debug(
-            "HBaseThrift2Client initialized with ssl_options: %s", ssl_options
-        )
+        logger.debug("HBaseThrift2Client initialized with ssl_options: %s", ssl_options)
 
     def __enter__(self):
         self.open()

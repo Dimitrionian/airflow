@@ -70,7 +70,7 @@
 apache-airflow-providers-apache-hbase package
 ------------------------------------------------------
 
-`Apache HBase <https://hbase.apache.org/>`__ 
+`Apache HBase <https://hbase.apache.org/>`__
 
 
 Release: 1.1.0

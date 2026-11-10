@@ -79,9 +79,7 @@ class TestThrift2SSL:
         mock_socket.assert_called_once_with("localhost", 9090)
 
         # Verify TSSLSocket was NOT used
-        with patch(
-            "airflow.providers.apache.hbase.client.thrift2_client.TSSLSocket.TSSLSocket"
-        ) as mock_ssl:
+        with patch("airflow.providers.apache.hbase.client.thrift2_client.TSSLSocket.TSSLSocket") as mock_ssl:
             mock_ssl.assert_not_called()
 
         # Verify transport was opened

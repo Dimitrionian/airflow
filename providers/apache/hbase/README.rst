@@ -56,8 +56,6 @@ PIP package                                 Version required
 ``apache-airflow``                          ``>=2.11.0``
 ``apache-airflow-providers-common-compat``  ``>=1.12.0``
 ``thrift``                                  ``>=0.13.0``
-``thrift_sasl``                             ``>=0.4.3``
-``sasl``                                    ``>=0.3.1``
 ==========================================  ==================
 
 Cross provider package dependencies
