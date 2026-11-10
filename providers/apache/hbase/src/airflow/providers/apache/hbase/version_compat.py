@@ -24,7 +24,7 @@
 from __future__ import annotations
 
 from airflow.hooks.base import BaseHook
-from airflow.models.baseoperator import BaseOperator
+from airflow.models import BaseOperator
 from airflow.models.connection import Connection
 from airflow.models.variable import Variable
 from airflow.sensors.base import BaseSensorOperator

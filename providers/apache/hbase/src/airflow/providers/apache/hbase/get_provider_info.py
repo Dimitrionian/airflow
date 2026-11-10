@@ -33,6 +33,8 @@ def get_provider_info():
                 "how-to-guide": [
                     "/docs/apache-airflow-providers-apache-hbase/operators.rst",
                     "/docs/apache-airflow-providers-apache-hbase/sensors.rst",
+                    "/docs/apache-airflow-providers-apache-hbase/hooks.rst",
+                    "/docs/apache-airflow-providers-apache-hbase/connections.rst",
                 ],
                 "tags": ["apache", "software"],
             }
@@ -44,10 +46,7 @@ def get_provider_info():
             }
         ],
         "sensors": [
-            {
-                "integration-name": "HBase",
-                "python-modules": ["airflow.providers.apache.hbase.sensors.hbase"],
-            }
+            {"integration-name": "HBase", "python-modules": ["airflow.providers.apache.hbase.sensors.hbase"]}
         ],
         "hooks": [
             {
@@ -55,7 +54,6 @@ def get_provider_info():
                 "python-modules": [
                     "airflow.providers.apache.hbase.hooks.hbase",
                     "airflow.providers.apache.hbase.hooks.hbase_cli",
-                    "airflow.providers.apache.hbase.hooks.hbase_strategy",
                 ],
             }
         ],
