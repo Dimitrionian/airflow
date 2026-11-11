@@ -19,11 +19,13 @@
 HBase backup producer DAG - generates data for backup.
 
 This DAG demonstrates data generation that triggers backup via Datasets:
-1. Creates table
-2. Populates with test data
-3. Produces dataset event to trigger backup DAG
+
+#. Creates table
+#. Populates with test data
+#. Produces dataset event to trigger backup DAG
 
 Prerequisites:
+
 - HBase must be running in distributed mode with HDFS
 """
 

@@ -19,11 +19,12 @@
 Example DAG demonstrating HBase sensors usage.
 
 This DAG simulates a real-world scenario where:
-1. External system creates a table with data
-2. We wait for the table to appear (HBaseTableSensor)
-3. We wait for specific row to be written (HBaseRowSensor)
-4. We process the data once it's available
-5. We clean up
+
+#. External system creates a table with data
+#. We wait for the table to appear (HBaseTableSensor)
+#. We wait for specific row to be written (HBaseRowSensor)
+#. We process the data once it's available
+#. We clean up
 
 Use case: Data ingestion pipeline where external ETL writes to HBase
 and Airflow processes the data once it's ready.

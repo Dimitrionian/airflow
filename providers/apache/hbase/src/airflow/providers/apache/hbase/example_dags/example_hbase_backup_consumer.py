@@ -19,15 +19,17 @@
 HBase backup consumer DAG - automatically triggered by dataset.
 
 This DAG demonstrates data-aware scheduling with incremental backups:
-1. Automatically triggered when test_table_backup is updated
-2. Creates backup set
-3. Performs FULL backup on first run, then INCREMENTAL backups
-4. Gets backup history
+
+#. Automatically triggered when test_table_backup is updated
+#. Creates backup set
+#. Performs FULL backup on first run, then INCREMENTAL backups
+#. Gets backup history
 
 Prerequisites:
+
 - HBase must be running in distributed mode with HDFS
 - Create backup directory in HDFS:
-  hdfs dfs -mkdir -p /hbase/backup && hdfs dfs -chmod 777 /hbase/backup
+  ``hdfs dfs -mkdir -p /hbase/backup && hdfs dfs -chmod 777 /hbase/backup``
 - Producer DAG must run first to generate data
 """
 

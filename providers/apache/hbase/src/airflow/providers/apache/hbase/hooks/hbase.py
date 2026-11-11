@@ -115,8 +115,9 @@ class HBaseThriftHook(BaseHook):
         Get SSL options from connection extra.
 
         Supports two formats:
-        1. Nested: {"ssl_options": {"ca_certs": "...", ...}}
-        2. Flat: {"ca_certs": "...", "cert_file": "...", ...}
+
+        #. Nested: ``{"ssl_options": {"ca_certs": "...", ...}}``
+        #. Flat: ``{"ca_certs": "...", "cert_file": "...", ...}``
         """
         if "ssl_options" in extra_config:
             return extra_config["ssl_options"]

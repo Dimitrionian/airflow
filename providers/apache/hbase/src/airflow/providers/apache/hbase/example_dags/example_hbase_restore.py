@@ -22,13 +22,14 @@ This DAG demonstrates HBase restore functionality with data verification.
 It uses the backup ID from the backup consumer DAG via XCom or manual specification.
 
 Workflow:
-1. Delete table (to simulate data loss)
-2. Restore from backup using backup ID
-3. Verify data was restored correctly
+
+#. Delete table (to simulate data loss)
+#. Restore from backup using backup ID
+#. Verify data was restored correctly
 
 To get backup ID from previous DAG run:
-- Use XCom: {{ ti.xcom_pull(dag_id='example_hbase_backup_consumer',
-task_ids='create_full_backup') }}
+
+- Use XCom: ``{{ ti.xcom_pull(dag_id='example_hbase_backup_consumer', task_ids='create_full_backup') }}``
 - Or specify manually in backup_id parameter
 """
 

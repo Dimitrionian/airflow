@@ -173,6 +173,7 @@ Connection extra templates
         "timeout": 30000,
         "namespace": "default"
     }
+
 **SSL/TLS**
 
 .. code-block:: json
