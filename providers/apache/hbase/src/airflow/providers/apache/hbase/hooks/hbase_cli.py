@@ -101,6 +101,7 @@ class HBaseCLIHook(BaseHook):
 
         env = os.environ.copy()
         env["JAVA_HOME"] = java_home
+        env["HBASE_HOME"] = hbase_home
         env["HBASE_OPTS"] = env.get("HBASE_OPTS", "") + " -Dslf4j.internal.verbosity=warn"
 
         logger.info("Executing HBase command: %s", " ".join(full_command))

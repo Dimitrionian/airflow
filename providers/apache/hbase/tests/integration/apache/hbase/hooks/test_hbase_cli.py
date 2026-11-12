@@ -61,3 +61,23 @@ class TestHBaseCLIHookIntegration:
         hook = HBaseCLIHook(hbase_conn_id=CONN_ID, java_home=JAVA_HOME_8)
         _, env = hook._prepare_command(["version"])
         assert env["JAVA_HOME"] == JAVA_HOME_8
+
+    def test_hbase_home_from_extra_is_used(self):
+        """Test that hbase_home from Extra is applied to env and binary path."""
+        hook = HBaseCLIHook(hbase_conn_id=CONN_ID, hbase_home="/fallback/hbase")
+        cmd, env = hook._prepare_command(["version"])
+        assert env["HBASE_HOME"] == HBASE_HOME
+        assert cmd[0] == f"{HBASE_HOME}/bin/hbase"
+
+    def test_hbase_home_fallback_to_constructor_when_not_in_extra(self):
+        """Test that hbase_home falls back to constructor value when not in Extra."""
+        os.environ["AIRFLOW_CONN_HBASE_CLI_TEST"] = Connection(
+            conn_id=CONN_ID,
+            conn_type="hbase",
+            host=HBASE_HOST,
+            port=9090,
+        ).as_json()
+        hook = HBaseCLIHook(hbase_conn_id=CONN_ID, hbase_home="/fallback/hbase")
+        cmd, env = hook._prepare_command(["version"])
+        assert env["HBASE_HOME"] == "/fallback/hbase"
+        assert cmd[0] == "/fallback/hbase/bin/hbase"
