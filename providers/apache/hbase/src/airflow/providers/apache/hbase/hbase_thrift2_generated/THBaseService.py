@@ -5,6 +5,8 @@
 #
 #  options string: py
 #
+# Source: https://github.com/apache/hbase/blob/master/hbase-thrift/src/main/resources/org/apache/hadoop/hbase/thrift2/hbase.thrift
+# Command: thrift --gen py hbase.thrift
 
 from thrift.Thrift import TType, TMessageType, TFrozenDict, TException, TApplicationException
 from thrift.protocol.TProtocol import TProtocolException
