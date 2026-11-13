@@ -57,6 +57,7 @@ dag = DAG(
     schedule=None,
     catchup=False,
     tags=["example", "hbase", "bulk", "optimized"],
+    doc_md=__doc__,
 )
 
 TABLE_NAME = "bulk_test_table"

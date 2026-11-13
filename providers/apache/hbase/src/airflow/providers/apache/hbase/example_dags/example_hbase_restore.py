@@ -75,6 +75,7 @@ dag = DAG(
     schedule=None,
     catchup=False,
     tags=["example", "hbase", "restore"],
+    doc_md=__doc__,
     params={
         "backup_id": Param(
             default="",

@@ -126,6 +126,7 @@ with DAG(
     schedule=None,
     catchup=False,
     tags=["example", "hbase", "sensors"],
+    doc_md=__doc__,
 ) as dag:
     # Step 1: Cleanup any existing table
     cleanup_existing = HBaseDeleteTableOperator(

@@ -107,6 +107,7 @@ with DAG(
     schedule=[backup_table_dataset],  # Triggered by dataset updates
     catchup=False,
     tags=["example", "hbase", "backup", "consumer"],
+    doc_md=__doc__,
 ) as dag:
     # Cleanup any stuck backup sessions before starting
     cleanup_stuck_sessions = BashOperator(

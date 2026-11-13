@@ -67,6 +67,7 @@ with DAG(
     schedule="@daily",  # Runs daily
     catchup=False,
     tags=["example", "hbase", "backup", "producer"],
+    doc_md=__doc__,
 ) as dag:
     # Delete table if exists for idempotency
     delete_table_cleanup = HBaseDeleteTableOperator(

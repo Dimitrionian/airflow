@@ -61,6 +61,7 @@ dag = DAG(
     schedule=None,
     catchup=False,
     tags=["example", "hbase", "hook"],
+    doc_md=__doc__,
 )
 
 # Delete table if exists for idempotency
